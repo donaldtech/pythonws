@@ -1,0 +1,27 @@
+https://github.com/fluent/fluentd-docker-image
+
+RUN apk update \
+ && apk add --no-cache \
+        ca-certificates \
+        ruby ruby-irb ruby-etc ruby-webrick \
+        tini \
+ && apk add --no-cache --virtual .build-deps \
+        build-base \
+        ruby-dev gnupg \
+         && apk del .build-deps \
+
+        
+ RUN addgroup -S fluent && adduser -S -g fluent fluent \
+
+
+
+https://github.com/etcd-io/etcd/blob/master/Dockerfile-release
+
+ADD etcd /usr/local/bin/
+ADD etcdctl /usr/local/bin/
+
+
+# Alpine Linux doesn't use pam, which means that there is no /etc/nsswitch.conf,
+# but Golang relies on /etc/nsswitch.conf to check the order of DNS resolving
+# (see https://github.com/golang/go/commit/9dee7771f561cf6aee081c0af6658cc81fac3918)
+# To fix this we just create /etc/nsswitch.conf and add the following line:
